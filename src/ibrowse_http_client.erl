@@ -527,6 +527,16 @@ is_ipv6_host(Host) ->
             end
     end.
 
+convert_host_to_ip(Host) ->
+	case inet_parse:address(Host) of
+		{ok, {_, _, _, _} = Address} ->
+			Address;
+		{ok, {_, _, _, _, _, _, _, _} = Address} ->
+			Address;
+		_ ->
+			Host
+	end.
+
 %% We don't want the caller to specify certain options
 filter_sock_options(Opts) ->
     lists:filter(fun({active, _}) ->
@@ -636,7 +646,8 @@ send_req_1(From,
     State_2 = check_ssl_options(Options, State_1),
     do_trace("Connecting...~n", []),
     Conn_timeout = get_value(connect_timeout, Options, Timeout),
-    case do_connect(Host_1, Port_1, Options, State_2, Conn_timeout) of
+	Host_2 = convert_host_to_ip(Host_1),
+    case do_connect(Host_2, Port_1, Options, State_2, Conn_timeout) of
         {ok, Sock} ->
             do_trace("Connected! Socket: ~1000.p~n", [Sock]),
             State_3 = State_2#state{socket = Sock,
