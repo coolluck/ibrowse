@@ -79,10 +79,10 @@
 %% Description: Starts the server
 %%--------------------------------------------------------------------
 start(Args) ->
-    gen_server:start(?MODULE, Args, []).
+    gen_server:start(?MODULE, Args, [{debug, error}]).
 
 start_link(Args) ->
-    gen_server:start_link(?MODULE, Args, []).
+    gen_server:start_link(?MODULE, Args, [{debug, error}]).
 
 stop(Conn_pid) ->
     case catch gen_server:call(Conn_pid, stop) of
