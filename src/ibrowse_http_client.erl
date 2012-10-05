@@ -878,6 +878,8 @@ make_request(Method, Headers, AbsPath, RelPath, Body, Options,
     HttpVsn = http_vsn_string(get_value(http_vsn, Options, {1,1})),
     Fun1 = fun({X, Y}) when is_atom(X) ->
                    {to_lower(atom_to_list(X)), X, Y};
+              ({X, Y}) when is_binary(X) ->
+                   {to_lower(binary_to_list(X)), X, Y};
               ({X, Y}) when is_list(X) ->
                    {to_lower(X), X, Y}
            end,
